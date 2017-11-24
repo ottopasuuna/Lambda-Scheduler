@@ -1,35 +1,26 @@
-env:
-  global:
-    - DIR=constraint-layout-start # Project directory
-    - API=25 # Android API level 25 by default
-    - TAG=google_apis # Google APIs by default, alternatively use default
-    - ABI=armeabi-v7a # ARM ABI v7a by default
-    - QEMU_AUDIO_DRV=none # Disable emulator audio to avoid warning
-    - GRADLE_USER_HOME="${TRAVIS_BUILD_DIR}/gradle" # Change location for Gradle Wrapper and cache
-    - ANDROID_HOME=/usr/local/android-sdk-24.0.2 # Depends on the cookbooks version used in the VM
-    - TOOLS=${ANDROID_HOME}/tools # PATH order matters, exists more than one emulator script
-    - PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
-    - ADB_INSTALL_TIMEOUT=20 # minutes (2 minutes by default)
-
 language: android
-sudo: false
+sudo: required
 android:
   components:
     - tools
     - platform-tools
-    - tools
 
     # The BuildTools version used by your project
     - build-tools-25.0.0
 
     # The SDK version used to compile your project
     - android-25
+    - extra-android-support
+    - extra-google-google_play_services
+    - extra-android-m2repository
+    - extra-google-m2repository
+  licenses:
+    - '.+'
 
-install:
-  # - echo yes | sdkmanager "tools"
-  # - echo yes | sdkmanager "platforms;android-25" # Latest platform required by SDK tools
-  # - echo yes | sdkmanager "platforms;android-${API}" # Android platform required by emulator
-  # - echo yes | sdkmanager "extras;android;m2repository"
-  # - echo yes | sdkmanager "extras;google;m2repository"
-  - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
-  - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
+before_script:
+  - chmod +x gradlew
+
+script:
+  - ./gradlew assembleDebug --stacktrace
+
+install: true
